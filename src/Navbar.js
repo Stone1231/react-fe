@@ -15,7 +15,8 @@ import {
   Button,
 } from "react-bootstrap";
 import HomeService from "./services/HomeService";
-import Home from "./App";
+import Home from "./components/Home";
+import User from "./components/User";
 
 const data = [
   {
@@ -24,14 +25,14 @@ const data = [
       {
         path: "/",
         exact: true,
-        title: "Home 1",
+        title: "Home",
         main: () => <Home />,
       },
       {
-        path: "/a",
+        path: "/user",
         exact: true,
-        title: "Home 2",
-        main: () => <Home />,
+        title: "User",
+        main: () => <User />,
       },
       {
         path: "/b",
@@ -47,17 +48,12 @@ class BootstrapNavbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = { backend: "" };
-
-    let res = HomeService.get();
-    this.setState({
-      backend: res,
-    });
-    // (async () => {
-    //   let res = await HomeService.get();
-    //   this.setState({
-    //     backend: res,
-    //   });
-    // })();
+    (async () => {
+      let res = await HomeService.get();
+      this.setState({
+        backend: res.data,
+      });
+    })();
   }
 
   render() {

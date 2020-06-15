@@ -1,23 +1,10 @@
-import { BASE_URL } from "./settings";
-import axios from "axios";
-
+import { apiHome } from "./api";
 export default class HomeService {
-  constructor() {}
-  static get() {
-    const url = BASE_URL + "/index";
-    // return axios.get(url).then((response) => {
-    //   return response.data;
-    // });
-
-    let res = "";
-    axios
-      .get(url)
-      .then((response) => {
-        res = response.data;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    return res;
+  static async get() {
+    try {
+      return await apiHome();
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
