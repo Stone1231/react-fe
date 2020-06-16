@@ -10,23 +10,21 @@ const homeRequest = axios.create({
 const userRequest = axios.create({
   baseURL: `${BASE_URL}/user`,
 });
-
-// const articleRequest = axios.create({
-//     baseURL: 'https://api/article/'
-// });
-//
-// const searchRequest = axios.create({
-//     baseURL: 'https://api/search/'
-// });
+const deptRequest = axios.create({
+  baseURL: `${BASE_URL}/dept`,
+});
+const projRequest = axios.create({
+  baseURL: `${BASE_URL}/proj`,
+});
 
 export const apiHome = (data) => homeRequest.get("", data);
 export const apiUserAll = () => userRequest.get("");
 export const apiUserSingle = (id) => userRequest.get(`/${id}`);
 export const apiUserDelete = (id) => userRequest.delete(`/${id}`);
 export const apiUserQuery = (data) =>
-  userRequest.post("", {
-    params: {
-      keyWord: data,
+  userRequest.post("/query", JSON.stringify(data), {
+    headers: {
+      "Content-Type": "application/json",
     },
   });
 export const apiUserPut = (data) => userRequest.put(`/${data.id}`, data);
@@ -44,6 +42,9 @@ export const apiUserPostFile = (data) => {
   });
 };
 
+export const apiDeptAll = () => deptRequest.get("");
+
+export const apiProjAll = () => projRequest.get("");
 //  getQuery(keyWord?: string) {
 // export const apiUserLogout = data => userRequest.post('/signOut', data);
 // export const apiUserSignUp = data => userRequest.post('/signUp', data);
