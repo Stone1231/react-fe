@@ -17,7 +17,7 @@ const projRequest = axios.create({
   baseURL: `${BASE_URL}/proj`,
 });
 
-export const apiHome = (data) => homeRequest.get("", data);
+export const apiHome = () => homeRequest.get("");
 export const apiUserAll = () => userRequest.get("");
 export const apiUserSingle = (id) => userRequest.get(`/${id}`);
 export const apiUserDelete = (id) => userRequest.delete(`/${id}`);
@@ -35,7 +35,7 @@ export const apiUserPostFile = (data) => {
     fData.append("file", data);
   }
 
-  return axios.post(`${this.url}/ufile`, fData, {
+  return userRequest.post("/ufile", fData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

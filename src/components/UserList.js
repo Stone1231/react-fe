@@ -44,8 +44,11 @@ class UserList extends BaseComponent {
     }
   }
 
+  create() {
+    this.props.history.push(`/${rootPath}/0`);
+  }
+
   render() {
-    const id = 1;
     return (
       <>
         <input
@@ -56,7 +59,7 @@ class UserList extends BaseComponent {
         />
         <button onClick={this.queryList}>query</button>
         <br />
-        <button>create</button>
+        <button onClick={() => this.create()}>create</button>
         <table className="table">
           <thead>
             <tr>
@@ -82,7 +85,7 @@ class UserList extends BaseComponent {
                   )}
                 </td>
                 <td>
-                  <Link to={`/${rootPath}/${item.id}`}>read single</Link>
+                  <Link to={`/${rootPath}/${item.id}`}>read</Link>
                 </td>
                 <td>
                   <button onClick={() => this.delete(item.id)}>del</button>

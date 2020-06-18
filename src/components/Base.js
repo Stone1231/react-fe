@@ -15,7 +15,7 @@ export default class BaseComponent extends React.Component {
         break;
       case "select-multiple":
         // let flavors = this.state.flavors;
-        let list = this.state[name];
+        let list = this.state.row[name];
         let index = list.indexOf(target.value);
         if (index > -1) {
           list.splice(index, 1);
@@ -24,14 +24,18 @@ export default class BaseComponent extends React.Component {
         }
         value = list;
         break;
+      case "number":
+        value = parseInt(target.value);
+        break;
       default:
         value = target.value;
         break;
     }
     console.log(value);
-
+    let row = this.state.row;
+    row[name] = value;
     this.setState({
-      [name]: value,
+      row: row,
     });
   }
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import { rootPath } from "./User";
-import { Link, withRouter, useParams } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import UserService from "../services/UserService";
 import DeptService from "../services/DeptService";
 import ProjService from "../services/ProjService";
@@ -23,56 +23,36 @@ class UserSingle extends BaseComponent {
   constructor(props) {
     super(props);
     this.state = {
-      row: { name: null },
-      depts: null,
-      projs: null,
+      row: {
+        // id: null,
+        name: null,
+        hight: null,
+        dept: 0,
+        projs: null,
+        photo: null,
+        birthday: null,
+      },
       photo: null,
       photoFile: null,
     };
     this.selectProjAll = this.selectProjAll.bind(this);
+    this.changeProj = this.changeProj.bind(this);
     this.getFile = this.getFile.bind(this);
-    this.getDeptItems = this.getDeptItems.bind(this);
     this.read = this.read.bind(this);
   }
   componentDidMount() {
-    (async () => {
-      await this.getDeptItems();
-      await this.getProjItems();
-    })().then(() => {
-      let { id } = useParams();
-      if (id > 0) {
-        this.read(id);
-      }
-    });
-  }
-
-  async getDeptItems() {
-    await DeptService.get().then((m) => {
-      this.setState((state) => ({
-        depts: m.data.map((m) => {
-          let item = {
-            value: m.id,
-            name: m.name,
-          };
-          return item;
-        }),
-      }));
-    });
-  }
-
-  async getProjItems() {
-    await ProjService.get().then((m) => {
-      this.setState((state) => ({
-        projs: m.data.map((m) => {
-          let item = {
-            value: m.id,
-            name: m.name,
-            checked: false,
-          };
-          return item;
-        }),
-      }));
-    });
+    // (async () => {
+    //   await this.getDeptItems();
+    //   await this.getProjItems();
+    // })().then(() => {
+    //   let id = this.props.match.params.id;
+    //   if (id > 0) {
+    //     this.read(id);
+    //   }
+    // });
+    if (this.props.id > 0) {
+      this.read(this.props.id);
+    }
   }
 
   read(id) {
@@ -101,155 +81,229 @@ class UserSingle extends BaseComponent {
     let checked = e.target.checked;
     let projs = [];
     if (checked) {
-      projs = this.state.projs.map((m) => m.value);
+      projs = this.props.projs.map((m) => m.value);
     }
+    let row = this.state.row;
+    row.projs = projs;
     this.setState((state) => ({
-      row: {
-        projs: projs,
-      },
+      row: row,
     }));
   }
 
-  // save() {
-  //   //console.log(this.row);
-  //   this.row.projs = this.projs.filter((m) => m.checked).map((m) => m.value);
-  //
-  //   if (this.row.id > 0) {
-  //     var updateOb = this.service.put(this.row.id.toString(), this.row);
-  //
-  //     if (this.photoFile) {
-  //       var fileOb = this.service.postFile(this.photoFile);
-  //
-  //       fileOb.subscribe((res) => {
-  //         this.row.photo = res;
-  //         updateOb.subscribe((res) => {
-  //           this.onSave.emit();
-  //         });
-  //       });
-  //     } else {
-  //       updateOb.subscribe((res) => {
-  //         this.onSave.emit();
-  //       });
-  //     }
-  //   } else {
-  //     var postOb = this.service.post(this.row);
-  //
-  //     if (this.photoFile) {
-  //       var fileOb = this.service.postFile(this.photoFile);
-  //
-  //       fileOb.subscribe((res) => {
-  //         this.row.photo = res;
-  //         postOb.subscribe((res) => {
-  //           this.onSave.emit();
-  //         });
-  //       });
-  //     } else {
-  //       postOb.subscribe((res) => {
-  //         this.onSave.emit();
-  //       });
-  //     }
-  //   }
-  // }
+  changeProj(e) {
+    let projs = [];
+    if (this.state.row.projs) {
+      projs = [...this.state.row.projs];
+    }
+
+    let v = parseInt(e.target.value);
+    let index = projs.indexOf(v);
+    if (e.target.checked) {
+      if (index < 0) {
+        projs.push(v);
+      }
+    } else {
+      if (index > -1) {
+        projs.splice(index, 1);
+      }
+    }
+
+    let row = this.state.row;
+    row.projs = projs;
+    this.setState((state) => ({
+      row: row,
+    }));
+  }
+
+  async save() {
+    let row = this.state.row;
+    // row.projs = this.props.projs.filter((m) => m.checked).map((m) => m.value);
+    row.id = parseInt(this.props.id);
+    // row.dept = parseInt(row.dept);
+    // this.setState((state) => ({
+    //   row: {
+    //     projs: this.state.projs.filter((m) => m.checked).map((m) => m.value),
+    //     id: this.props.id,
+    //   },
+    // }));
+
+    if (this.state.photoFile) {
+      await UserService.upload(this.state.photoFile).then((m) => {
+        row.photo = m.data;
+        // this.setState((state) => ({
+        //   row: {
+        //     photo: res.data,
+        //   },
+        // }));
+      });
+    }
+
+    if (row.id > 0) {
+      await UserService.put(row);
+    } else {
+      await UserService.post(row);
+    }
+    this.props.onBack();
+  }
 
   getFile(e) {
     //let files:FileList = e.target.value;
+    let files = e.target.files;
     this.setState((state) => ({
-      photoFile: e.target.files[0],
+      photoFile: files[0],
     }));
   }
 
   render() {
     return (
-      <table>
-        <tbody>
-          <tr>
-            <th>id</th>
-            <td>{this.props.id > 0 && this.props.id}</td>
-          </tr>
-          <tr>
-            <th>name</th>
-            <td>
-              <input
-                name="row.name"
-                type="text"
-                value={this.state.row.name}
-                onChange={this.handleInputChange}
-              />
-            </td>
-          </tr>
-          <tr>
-            <th>hight</th>
-            <td>
-              <input
-                name="row.hight"
-                type="number"
-                value={this.state.row.hight}
-                onChange={this.handleInputChange}
-              />
-            </td>
-          </tr>
-          <tr>
-            <th>birthday</th>
-            <td>
-              <input
-                name="row.birthday"
-                type="date"
-                value={this.state.row.birthday}
-                onChange={this.handleInputChange}
-              />
-            </td>
-          </tr>
-          <tr>
-            <th>dept</th>
-            <td>
-              <SelectList
-                name="row.dept"
-                list={this.state.depts}
-                value={this.state.row.dept}
-                onChange={this.handleInputChange}
-              />
-            </td>
-          </tr>
-          <tr>
-            <th>
-              proj
-              <input type="checkbox" onChange={this.selectProjAll} />
-            </th>
-            <td>
-              {this.state.row.projs &&
-                this.state.projs.map((item) => (
-                  <span>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={
-                          this.state.row.projs &&
-                          -1 !== this.state.row.projs.indexOf(item.value)
-                        }
-                      />
-                      {item.name}
-                    </label>
-                  </span>
-                ))}
-            </td>
-          </tr>
-          <tr>
-            <th>photo</th>
-            <td>
-              {this.state.photo && (
-                <img height="200" src={`${IMG_URL}/img/${this.state.photo}`} />
-              )}
-              <input type="file" onChange={this.getFile} />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      // <>
-      //   user single
-      //   <Link to={`/${rootPath}`}>list</Link>
-      // </>
+      <>
+        <table>
+          <tbody>
+            <tr>
+              <th>id</th>
+              <td>{this.props.id > 0 && this.props.id}</td>
+            </tr>
+            <tr>
+              <th>name</th>
+              <td>
+                <input
+                  name="name"
+                  type="text"
+                  value={this.state.row.name}
+                  onChange={this.handleInputChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>hight</th>
+              <td>
+                <input
+                  name="hight"
+                  type="number"
+                  value={this.state.row.hight}
+                  onChange={this.handleInputChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>birthday</th>
+              <td>
+                <input
+                  name="birthday"
+                  type="date"
+                  value={this.state.row.birthday}
+                  onChange={this.handleInputChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>dept</th>
+              <td>
+                <SelectList
+                  name="dept"
+                  list={this.props.depts}
+                  value={this.state.row.dept}
+                  onChange={this.handleInputChange}
+                />
+              </td>
+            </tr>
+            <tr>
+              <th>
+                proj
+                <input type="checkbox" onChange={this.selectProjAll} />
+              </th>
+              <td>
+                {this.props.projs &&
+                  this.props.projs.map((item) => (
+                    <span>
+                      <label>
+                        <input
+                          type="checkbox"
+                          onChange={this.changeProj}
+                          checked={
+                            this.state.row.projs &&
+                            -1 !== this.state.row.projs.indexOf(item.value)
+                          }
+                          value={item.value}
+                        />
+                        {item.name}
+                      </label>
+                    </span>
+                  ))}
+              </td>
+            </tr>
+            <tr>
+              <th>photo</th>
+              <td>
+                {this.state.photo && (
+                  <img
+                    height="200"
+                    src={`${IMG_URL}/img/${this.state.photo}`}
+                  />
+                )}
+                <input type="file" onChange={this.getFile} />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button onClick={() => this.save()}>save</button>
+        <button onClick={() => this.props.onBack()}>back</button>
+      </>
     );
   }
 }
 
-export default withRouter(UserSingle);
+class UserSingleDisplay extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { depts: null, projs: null };
+    this.onBack = this.onBack.bind(this);
+  }
+
+  async componentDidMount() {
+    await DeptService.get().then((m) => {
+      this.setState({
+        depts: m.data.map((m) => {
+          let item = {
+            value: m.id,
+            name: m.name,
+          };
+          return item;
+        }),
+      });
+    });
+    await ProjService.get().then((m) => {
+      this.setState({
+        projs: m.data.map((m) => {
+          let item = {
+            value: m.id,
+            name: m.name,
+            checked: false,
+          };
+          return item;
+        }),
+      });
+    });
+  }
+
+  onBack() {
+    this.props.history.push("/" + rootPath);
+    // this.props.history.goBack();
+    //return <Redirect to={"/" + rootPath} />;
+    // return <Redirect to="/user" />;
+  }
+
+  render() {
+    const id = this.props.match.params.id;
+    return (
+      <UserSingle
+        id={id}
+        depts={this.state.depts}
+        projs={this.state.projs}
+        onBack={this.onBack}
+      />
+    );
+  }
+}
+
+export default withRouter(UserSingleDisplay);
