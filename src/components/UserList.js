@@ -12,7 +12,7 @@ class UserList extends BaseComponent {
     this.getList = this.getList.bind(this);
     this.queryList = this.queryList.bind(this);
     // this.delete = this.delete.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
+    // this.handleInputChange = this.handleInputChange.bind(this);
     // this.getList();
   }
 

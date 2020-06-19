@@ -16,6 +16,12 @@ const deptRequest = axios.create({
 const projRequest = axios.create({
   baseURL: `${BASE_URL}/proj`,
 });
+const fileRequest = axios.create({
+  baseURL: `${BASE_URL}/file`,
+});
+const authRequest = axios.create({
+  baseURL: `${BASE_URL}/auth`,
+});
 
 export const apiHome = () => homeRequest.get("");
 export const apiUserAll = () => userRequest.get("");
@@ -45,6 +51,58 @@ export const apiUserPostFile = (data) => {
 export const apiDeptAll = () => deptRequest.get("");
 
 export const apiProjAll = () => projRequest.get("");
-//  getQuery(keyWord?: string) {
-// export const apiUserLogout = data => userRequest.post('/signOut', data);
-// export const apiUserSignUp = data => userRequest.post('/signUp', data);
+
+export const apiFilePost = (data) => {
+  let fData = new FormData();
+  if (data != null) {
+    fData.append("file", data);
+  }
+
+  return fileRequest.post("/ufile", fData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const apiFile2Post = (file1, file2) => {
+  let fData = new FormData();
+  if (file1 != null) {
+    fData.append("file1", file1);
+  }
+  if (file2 != null) {
+    fData.append("file2", file2);
+  }
+
+  return fileRequest.post("/ufile2", fData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const apiFilesPost = (files) => {
+  let fData = new FormData();
+  if (files != null) {
+    for (let i in files) {
+      if (i != null) {
+        fData.append("files", files[i]);
+      }
+    }
+  }
+
+  return fileRequest.post("/ufiles", fData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+export const apiAuthLogin = (data) => authRequest.put(`/login`, data);
+export const apiAuthGet = (token) =>
+  authRequest.get("", {
+    headers: {
+      // "Content-Type":  "application/json",
+      Authorization: "Bearer " + token,
+    },
+  });

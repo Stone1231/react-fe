@@ -7,7 +7,15 @@ export default class BaseComponent extends React.Component {
   }
   handleInputChange(event) {
     const target = event.target;
-    const name = target.name;
+    let name = target.name;
+
+    let state = this.state;
+    let names = name.split(".");
+    if (names.length > 1) {
+      state = this.state[names[0]];
+      name = names[1];
+    }
+
     let value;
     switch (target.type) {
       case "checkbox":
@@ -15,7 +23,7 @@ export default class BaseComponent extends React.Component {
         break;
       case "select-multiple":
         // let flavors = this.state.flavors;
-        let list = this.state.row[name];
+        let list = state[name]; //this.state.row[name];
         let index = list.indexOf(target.value);
         if (index > -1) {
           list.splice(index, 1);
@@ -32,10 +40,13 @@ export default class BaseComponent extends React.Component {
         break;
     }
     console.log(value);
-    let row = this.state.row;
-    row[name] = value;
-    this.setState({
-      row: row,
-    });
+
+    state[name] = value;
+    this.setState(state);
+    // let row = this.state.row;
+    // row[name] = value;
+    // this.setState({
+    //   row: row,
+    // });
   }
 }

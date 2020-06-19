@@ -17,6 +17,8 @@ import {
 import HomeService from "./services/HomeService";
 import Home from "./components/Home";
 import User from "./components/User";
+import Files from "./components/Files";
+import { Login, LoginAfter } from "./components/Auth";
 
 const data = [
   {
@@ -26,19 +28,41 @@ const data = [
         path: "/",
         exact: true,
         title: "Home",
+        description: "Backend",
+        menu: true,
         main: () => <Home />,
       },
       {
         path: "/user",
         exact: true,
         title: "User",
+        description: "User CRUD",
+        menu: true,
         main: () => <User />,
       },
       {
-        path: "/b",
+        path: "/files",
         exact: true,
-        title: "Home 3",
-        main: () => <Home />,
+        title: "Files",
+        description: "Files Upload",
+        menu: true,
+        main: () => <Files />,
+      },
+      {
+        path: "/login",
+        exact: true,
+        title: "verify",
+        description: "Login",
+        menu: false,
+        main: () => <Login />,
+      },
+      {
+        path: "/login-after",
+        exact: true,
+        title: "verify",
+        description: "get session values",
+        menu: true,
+        main: () => <LoginAfter />,
       },
     ],
   },
@@ -75,9 +99,11 @@ class BootstrapNavbar extends React.Component {
               <Navbar.Collapse id="basic-navbar-nav" aria-expanded="true">
                 <Nav className="flex-column">
                   {data.map((m) =>
-                    m.routes.map((route, index) => (
-                      <Nav.Link href={route.path}>{route.title}</Nav.Link>
-                    ))
+                    m.routes
+                      .filter((m) => m.menu)
+                      .map((route, index) => (
+                        <Nav.Link href={route.path}>{route.title}</Nav.Link>
+                      ))
                   )}
                 </Nav>
               </Navbar.Collapse>

@@ -167,7 +167,7 @@ class UserSingle extends BaseComponent {
               <th>name</th>
               <td>
                 <input
-                  name="name"
+                  name="row.name"
                   type="text"
                   value={this.state.row.name}
                   onChange={this.handleInputChange}
@@ -178,7 +178,7 @@ class UserSingle extends BaseComponent {
               <th>hight</th>
               <td>
                 <input
-                  name="hight"
+                  name="row.hight"
                   type="number"
                   value={this.state.row.hight}
                   onChange={this.handleInputChange}
@@ -189,7 +189,7 @@ class UserSingle extends BaseComponent {
               <th>birthday</th>
               <td>
                 <input
-                  name="birthday"
+                  name="row.birthday"
                   type="date"
                   value={this.state.row.birthday}
                   onChange={this.handleInputChange}
@@ -200,7 +200,7 @@ class UserSingle extends BaseComponent {
               <th>dept</th>
               <td>
                 <SelectList
-                  name="dept"
+                  name="row.dept"
                   list={this.props.depts}
                   value={this.state.row.dept}
                   onChange={this.handleInputChange}
