@@ -22,6 +22,9 @@ const fileRequest = axios.create({
 const authRequest = axios.create({
   baseURL: `${BASE_URL}/auth`,
 });
+const errRequest = axios.create({
+  baseURL: `${BASE_URL}/error`,
+});
 
 export const apiHome = () => homeRequest.get("");
 export const apiUserAll = () => userRequest.get("");
@@ -106,3 +109,5 @@ export const apiAuthGet = (token) =>
       Authorization: "Bearer " + token,
     },
   });
+
+export const apiErr = () => errRequest.get("");

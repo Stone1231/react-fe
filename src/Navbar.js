@@ -16,9 +16,11 @@ import {
 } from "react-bootstrap";
 import HomeService from "./services/HomeService";
 import Home from "./components/Home";
-import User from "./components/User";
+import User from "./components/User/User";
+import UserPlus from "./components/UserPlus/User";
 import Files from "./components/Files";
 import { Login, LoginAfter } from "./components/Auth";
+import Error from "./components/Error";
 
 const data = [
   {
@@ -39,6 +41,14 @@ const data = [
         description: "User CRUD",
         menu: true,
         main: () => <User />,
+      },
+      {
+        path: "/user_plus",
+        exact: true,
+        title: "User Plus",
+        description: "User CRUD Plus",
+        menu: true,
+        main: () => <UserPlus />,
       },
       {
         path: "/files",
@@ -63,6 +73,14 @@ const data = [
         description: "get session values",
         menu: true,
         main: () => <LoginAfter />,
+      },
+      {
+        path: "/error",
+        exact: true,
+        title: "error",
+        description: "error handler",
+        menu: true,
+        main: () => <Error />,
       },
     ],
   },
@@ -116,7 +134,7 @@ class BootstrapNavbar extends React.Component {
                 {data.map((m) =>
                   m.routes.map((route, index) => (
                     <Route exact path={route.path}>
-                      {route.title}
+                      {route.description}
                     </Route>
                   ))
                 )}

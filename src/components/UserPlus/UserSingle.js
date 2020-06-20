@@ -1,11 +1,11 @@
 import React from "react";
 import { rootPath } from "./User";
 import { withRouter } from "react-router-dom";
-import UserService from "../services/UserService";
-import DeptService from "../services/DeptService";
-import ProjService from "../services/ProjService";
-import BaseComponent from "./Base";
-import { IMG_URL } from "../services/api";
+import UserService from "../../services/UserService";
+import DeptService from "../../services/DeptService";
+import ProjService from "../../services/ProjService";
+import BaseComponent from "../Base";
+import { IMG_URL } from "../../services/api";
 
 function SelectList(props) {
   return (
@@ -41,15 +41,6 @@ class UserSingle extends BaseComponent {
     this.read = this.read.bind(this);
   }
   componentDidMount() {
-    // (async () => {
-    //   await this.getDeptItems();
-    //   await this.getProjItems();
-    // })().then(() => {
-    //   let id = this.props.match.params.id;
-    //   if (id > 0) {
-    //     this.read(id);
-    //   }
-    // });
     if (this.props.id > 0) {
       this.read(this.props.id);
     }
@@ -60,21 +51,8 @@ class UserSingle extends BaseComponent {
       this.setState((state) => ({
         row: m.data,
         photo: m.data.photo,
-        // projs: this.state.row.projs.map(
-        //   (m) =>
-        //     (m.checked =
-        //       this.row.projs && -1 !== this.row.projs.indexOf(m.value))
-        // ),
       }));
     });
-    // this.service.getSingle(id.toString()).subscribe((d) => {
-    //   this.row = d;
-    //   this.photo = d.photo;
-    //   this.projs.map(
-    //     (m) =>
-    //       (m.checked = this.row.projs && -1 !== this.row.projs.indexOf(m.value))
-    //   );
-    // });
   }
 
   selectProjAll(e) {
@@ -117,24 +95,12 @@ class UserSingle extends BaseComponent {
 
   async save() {
     let row = this.state.row;
-    // row.projs = this.props.projs.filter((m) => m.checked).map((m) => m.value);
-    row.id = parseInt(this.props.id);
-    // row.dept = parseInt(row.dept);
-    // this.setState((state) => ({
-    //   row: {
-    //     projs: this.state.projs.filter((m) => m.checked).map((m) => m.value),
-    //     id: this.props.id,
-    //   },
-    // }));
+    // row.id = parseInt(this.props.id);
+    row.id = this.props.id;
 
     if (this.state.photoFile) {
       await UserService.upload(this.state.photoFile).then((m) => {
         row.photo = m.data;
-        // this.setState((state) => ({
-        //   row: {
-        //     photo: res.data,
-        //   },
-        // }));
       });
     }
 
@@ -147,7 +113,6 @@ class UserSingle extends BaseComponent {
   }
 
   getFile(e) {
-    //let files:FileList = e.target.value;
     let files = e.target.files;
     this.setState((state) => ({
       photoFile: files[0],
@@ -257,7 +222,6 @@ class UserSingleDisplay extends React.Component {
   constructor(props) {
     super(props);
     this.state = { depts: null, projs: null };
-    this.onBack = this.onBack.bind(this);
   }
 
   async componentDidMount() {
@@ -286,21 +250,14 @@ class UserSingleDisplay extends React.Component {
     });
   }
 
-  onBack() {
-    this.props.history.push("/" + rootPath);
-    // this.props.history.goBack();
-    //return <Redirect to={"/" + rootPath} />;
-    // return <Redirect to="/user" />;
-  }
-
   render() {
-    const id = this.props.match.params.id;
+    const id = this.props.id;
     return (
       <UserSingle
         id={id}
         depts={this.state.depts}
         projs={this.state.projs}
-        onBack={this.onBack}
+        onBack={this.props.showList}
       />
     );
   }

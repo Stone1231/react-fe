@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
 import { rootPath } from "./User";
-import UserService from "../services/UserService";
-import { IMG_URL } from "../services/api";
-import BaseComponent from "./Base";
+import UserService from "../../services/UserService";
+import { IMG_URL } from "../../services/api";
+import BaseComponent from "../Base";
 
 class UserList extends BaseComponent {
   constructor(props) {
@@ -45,7 +45,11 @@ class UserList extends BaseComponent {
   }
 
   create() {
-    this.props.history.push(`/${rootPath}/0`);
+    this.props.loadSingle(0);
+  }
+
+  loadSingle(id) {
+    this.props.loadSingle(id);
   }
 
   render() {
@@ -85,7 +89,7 @@ class UserList extends BaseComponent {
                   )}
                 </td>
                 <td>
-                  <Link to={`/${rootPath}/${item.id}`}>read</Link>
+                  <Link onClick={() => this.loadSingle(item.id)}>read</Link>
                 </td>
                 <td>
                   <button onClick={() => this.delete(item.id)}>del</button>
