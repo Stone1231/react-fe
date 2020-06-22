@@ -17,7 +17,9 @@ class UserList extends BaseComponent {
   }
 
   componentDidMount() {
-    this.getList();
+    (async () => {
+      await this.getList();
+    })();
   }
 
   async getList() {

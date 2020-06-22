@@ -1,6 +1,5 @@
 import React from "react";
 import { rootPath } from "./User";
-import { withRouter } from "react-router-dom";
 import UserService from "../../services/UserService";
 import DeptService from "../../services/DeptService";
 import ProjService from "../../services/ProjService";
@@ -19,38 +18,148 @@ function SelectList(props) {
   );
 }
 
+class UserRow {
+  get name() {
+    if (this._name !== undefined) {
+      return this._name;
+    } else {
+      return "";
+    }
+  }
+  set name(value) {
+    this._name = value;
+  }
+
+  get hight() {
+    if (this._hight !== undefined) {
+      return this._hight;
+    } else {
+      return "";
+    }
+  }
+  set hight(value) {
+    this._hight = value;
+  }
+
+  get dept() {
+    if (this._dept !== undefined) {
+      return this._dept;
+    } else {
+      return 0;
+    }
+  }
+  set dept(value) {
+    this._dept = value;
+  }
+
+  get projs() {
+    if (this._projs !== undefined) {
+      return this._projs;
+    } else {
+      return [];
+    }
+  }
+  set projs(value) {
+    this._projs = value;
+  }
+
+  get photo() {
+    if (this._photo !== undefined) {
+      return this._photo;
+    } else {
+      return "";
+    }
+  }
+  set photo(value) {
+    this._photo = value;
+  }
+
+  get birthday() {
+    if (this._birthday !== undefined) {
+      return this._birthday;
+    } else {
+      return "";
+    }
+  }
+  set birthday(value) {
+    this._birthday = value;
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      hight: this.hight,
+      dept: this.dept,
+      projs: this.projs,
+      photo: this.photo,
+      birthday: this.birthday,
+    };
+  }
+}
+
 class UserSingle extends BaseComponent {
   constructor(props) {
     super(props);
+    let user = new UserRow();
     this.state = {
-      row: {
-        // id: null,
-        name: null,
-        hight: null,
-        dept: 0,
-        projs: null,
-        photo: null,
-        birthday: null,
-      },
-      photo: null,
+      row: user,
+      // row: {
+      //   // id: null,
+      //   name: null,
+      //   hight: null,
+      //   dept: 0,
+      //   projs: [],
+      //   photo: null,
+      //   birthday: null,
+      // },
       photoFile: null,
     };
     this.selectProjAll = this.selectProjAll.bind(this);
     this.changeProj = this.changeProj.bind(this);
     this.getFile = this.getFile.bind(this);
     this.read = this.read.bind(this);
+    this.default = this.default.bind(this);
   }
   componentDidMount() {
     if (this.props.id > 0) {
       this.read(this.props.id);
     }
   }
+  // shouldComponentUpdate(nextProps, nextState, nextContext) {
+  //   return true;
+  // }
+  componentDidUpdate(prevProps) {
+    const willUpdate = this.props.id !== prevProps.id;
+    if (!willUpdate) {
+      return;
+    }
+    if (this.props.id > 0) {
+      this.read(this.props.id);
+    } else if (this.props.id == 0) {
+      this.default();
+    }
+  }
+
+  default() {
+    let user = new UserRow();
+    this.setState((state) => ({
+      row: user,
+      // row: {
+      //   // id: null,
+      //   name: "",
+      //   hight: "",
+      //   dept: 0,
+      //   projs: [],
+      //   photo: "",
+      //   birthday: "",
+      // },
+    }));
+  }
 
   read(id) {
     UserService.getSingle(id).then((m) => {
       this.setState((state) => ({
         row: m.data,
-        photo: m.data.photo,
       }));
     });
   }
@@ -200,10 +309,10 @@ class UserSingle extends BaseComponent {
             <tr>
               <th>photo</th>
               <td>
-                {this.state.photo && (
+                {this.state.row.photo && (
                   <img
                     height="200"
-                    src={`${IMG_URL}/img/${this.state.photo}`}
+                    src={`${IMG_URL}/img/${this.state.row.photo}`}
                   />
                 )}
                 <input type="file" onChange={this.getFile} />
@@ -218,49 +327,4 @@ class UserSingle extends BaseComponent {
   }
 }
 
-class UserSingleDisplay extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { depts: null, projs: null };
-  }
-
-  async componentDidMount() {
-    await DeptService.get().then((m) => {
-      this.setState({
-        depts: m.data.map((m) => {
-          let item = {
-            value: m.id,
-            name: m.name,
-          };
-          return item;
-        }),
-      });
-    });
-    await ProjService.get().then((m) => {
-      this.setState({
-        projs: m.data.map((m) => {
-          let item = {
-            value: m.id,
-            name: m.name,
-            checked: false,
-          };
-          return item;
-        }),
-      });
-    });
-  }
-
-  render() {
-    const id = this.props.id;
-    return (
-      <UserSingle
-        id={id}
-        depts={this.state.depts}
-        projs={this.state.projs}
-        onBack={this.props.showList}
-      />
-    );
-  }
-}
-
-export default withRouter(UserSingleDisplay);
+export default UserSingle;

@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { rootPath } from "./User";
 import UserService from "../../services/UserService";
 import { IMG_URL } from "../../services/api";
@@ -14,10 +14,23 @@ class UserList extends BaseComponent {
     // this.delete = this.delete.bind(this);
     // this.handleInputChange = this.handleInputChange.bind(this);
     // this.getList();
+    this.reloadList = this.reloadList.bind(this);
   }
 
   componentDidMount() {
-    this.getList();
+    (async () => {
+      await this.getList();
+    })();
+  }
+
+  componentDidUpdate(prevProps) {
+    const willUpdate = this.props.id !== prevProps.id && this.props.id == -1;
+    if (!willUpdate) {
+      return;
+    }
+    (async () => {
+      await this.reloadList();
+    })();
   }
 
   async getList() {
@@ -34,14 +47,17 @@ class UserList extends BaseComponent {
     }));
   }
 
-  async delete(id) {
-    let res = await UserService.delete(id);
-
+  async reloadList() {
     if (this.state.keyWord != "") {
       await this.queryList();
     } else {
       await this.getList();
     }
+  }
+
+  async delete(id) {
+    let res = await UserService.delete(id);
+    await this.reloadList();
   }
 
   create() {
@@ -103,4 +119,4 @@ class UserList extends BaseComponent {
   }
 }
 
-export default withRouter(UserList);
+export default UserList;

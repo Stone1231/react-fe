@@ -39,42 +39,23 @@ class UserSingle extends BaseComponent {
     this.changeProj = this.changeProj.bind(this);
     this.getFile = this.getFile.bind(this);
     this.read = this.read.bind(this);
-  }
-  componentDidMount() {
-    // (async () => {
-    //   await this.getDeptItems();
-    //   await this.getProjItems();
-    // })().then(() => {
-    //   let id = this.props.match.params.id;
-    //   if (id > 0) {
-    //     this.read(id);
-    //   }
-    // });
     if (this.props.id > 0) {
       this.read(this.props.id);
     }
   }
+  // componentDidMount() {
+  //   if (this.props.id > 0) {
+  //     this.read(this.props.id);
+  //   }
+  // }
 
   read(id) {
     UserService.getSingle(id).then((m) => {
       this.setState((state) => ({
         row: m.data,
         photo: m.data.photo,
-        // projs: this.state.row.projs.map(
-        //   (m) =>
-        //     (m.checked =
-        //       this.row.projs && -1 !== this.row.projs.indexOf(m.value))
-        // ),
       }));
     });
-    // this.service.getSingle(id.toString()).subscribe((d) => {
-    //   this.row = d;
-    //   this.photo = d.photo;
-    //   this.projs.map(
-    //     (m) =>
-    //       (m.checked = this.row.projs && -1 !== this.row.projs.indexOf(m.value))
-    //   );
-    // });
   }
 
   selectProjAll(e) {
@@ -117,24 +98,11 @@ class UserSingle extends BaseComponent {
 
   async save() {
     let row = this.state.row;
-    // row.projs = this.props.projs.filter((m) => m.checked).map((m) => m.value);
     row.id = parseInt(this.props.id);
-    // row.dept = parseInt(row.dept);
-    // this.setState((state) => ({
-    //   row: {
-    //     projs: this.state.projs.filter((m) => m.checked).map((m) => m.value),
-    //     id: this.props.id,
-    //   },
-    // }));
 
     if (this.state.photoFile) {
       await UserService.upload(this.state.photoFile).then((m) => {
         row.photo = m.data;
-        // this.setState((state) => ({
-        //   row: {
-        //     photo: res.data,
-        //   },
-        // }));
       });
     }
 
@@ -258,12 +226,11 @@ class UserSingleDisplay extends React.Component {
     super(props);
     this.state = { depts: null, projs: null };
     this.onBack = this.onBack.bind(this);
-  }
 
-  async componentDidMount() {
-    await DeptService.get().then((m) => {
+    (async () => {
+      let depts = await DeptService.get();
       this.setState({
-        depts: m.data.map((m) => {
+        depts: depts.data.map((m) => {
           let item = {
             value: m.id,
             name: m.name,
@@ -271,10 +238,10 @@ class UserSingleDisplay extends React.Component {
           return item;
         }),
       });
-    });
-    await ProjService.get().then((m) => {
+
+      let projs = await ProjService.get();
       this.setState({
-        projs: m.data.map((m) => {
+        projs: projs.data.map((m) => {
           let item = {
             value: m.id,
             name: m.name,
@@ -283,7 +250,7 @@ class UserSingleDisplay extends React.Component {
           return item;
         }),
       });
-    });
+    })();
   }
 
   onBack() {
