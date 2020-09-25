@@ -1,5 +1,5 @@
 import React from "react";
-import ErrService from "../services/ErrorService";
+import ErrService from "services/ErrorService";
 
 export default function Error() {
   function getErr() {

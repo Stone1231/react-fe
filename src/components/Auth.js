@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import AuthService from "../services/AuthService";
+import AuthService from "services/AuthService";
 
 export function Login() {
   const [userName, setUserName] = useState("");

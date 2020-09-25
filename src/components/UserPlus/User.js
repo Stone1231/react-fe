@@ -1,9 +1,9 @@
 import React from "react";
 import UserList from "./UserList";
 import UserSingle from "./UserSingle";
-import BaseComponent from "../Base";
-import DeptService from "../../services/DeptService";
-import ProjService from "../../services/ProjService";
+import BaseComponent from "components/Base";
+import DeptService from "services/DeptService";
+import ProjService from "services/ProjService";
 
 export const rootPath = "user";
 

@@ -1,10 +1,7 @@
 import React from "react";
-import { rootPath } from "./User";
-import UserService from "../../services/UserService";
-import DeptService from "../../services/DeptService";
-import ProjService from "../../services/ProjService";
-import BaseComponent from "../Base";
-import { IMG_URL } from "../../services/api";
+import UserService from "services/UserService";
+import BaseComponent from "components/Base";
+import { IMG_URL } from "services/api";
 
 function SelectList(props) {
   return (

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import FileService from "../services/FileService";
+import FileService from "services/FileService";
 
 export default function Files() {
   const [file1, setFile1] = useState(null);

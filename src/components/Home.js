@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import HomeService from "../services/HomeService";
+import HomeService from "services/HomeService";
 
 export default function IntroducingJSX(props) {
   const [backend, setBackend] = useState("");

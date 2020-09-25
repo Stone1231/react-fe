@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
 import { rootPath } from "./User";
-import UserService from "../../services/UserService";
-import { IMG_URL } from "../../services/api";
-import BaseComponent from "../Base";
+import UserService from "services/UserService";
+import { IMG_URL } from "services/api";
+import BaseComponent from "components/Base";
 
 class UserList extends BaseComponent {
   constructor(props) {
