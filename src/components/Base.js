@@ -50,3 +50,19 @@ export default class BaseComponent extends React.Component {
     // });
   }
 }
+
+export const handleInputChange = (event, origin, setState) => {
+  const target = event.target;
+  let name = target.name;
+  let state = origin;
+  let names = name.split(".");
+  if (names.length > 1) {
+    state = state[names[0]];
+    name = names[1];
+  }
+  let value = 1;
+
+  state[name] = value;
+
+  setState({ ...origin, state });
+};

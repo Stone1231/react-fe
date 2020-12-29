@@ -3,11 +3,14 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import Navbar from "./Navbar";
 import * as serviceWorker from "./serviceWorker";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { store, context } from "stores/index";
+import { Provider } from "react-redux";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Navbar />
+    <Provider context={context} store={store}>
+      <Navbar />
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

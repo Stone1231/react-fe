@@ -1,30 +1,26 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  useParams,
-} from "react-router-dom";
-import {
-  Navbar,
-  Nav,
-  NavDropdown,
-  NavItem,
-  Form,
-  FormControl,
-  Button,
-} from "react-bootstrap";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import HomeService from "./services/HomeService";
 import Home from "./components/Home";
 import User from "./components/User/User";
 import UserPlus from "./components/UserPlus/User";
+import UserRedux from "./components/UserRedux/User";
 import Files from "./components/Files";
 import { Login, LoginAfter } from "./components/Auth";
 import Error from "./components/Error";
+import Todos from "./components/Todos/App";
+
+function SidebarTitle(props) {
+  let style = { color: "blue" };
+  if (props.style != null) {
+    style = props.style;
+  }
+  return <div style={style}>{props.children}</div>;
+}
 
 const data = [
   {
-    name: "DEFAULT",
+    name: "React Demo",
     routes: [
       {
         path: "/",
@@ -49,6 +45,14 @@ const data = [
         description: "User CRUD Plus",
         menu: true,
         main: () => <UserPlus />,
+      },
+      {
+        path: "/user_redux",
+        exact: true,
+        title: "User Redux",
+        description: "User CRUD Redux",
+        menu: true,
+        main: () => <UserRedux />,
       },
       {
         path: "/files",
@@ -82,6 +86,14 @@ const data = [
         menu: true,
         main: () => <Error />,
       },
+      {
+        path: "/todos",
+        exact: true,
+        title: "Todos",
+        description: "Todos redux",
+        menu: true,
+        main: () => <Todos />,
+      },
     ],
   },
 ];
@@ -101,56 +113,60 @@ class BootstrapNavbar extends React.Component {
   render() {
     return (
       <Router>
-        <div className="row">
-          <div className="col-sm-2">
-            <Navbar
-              bg="dark"
-              variant="dark"
-              sticky="top"
-              className="flex-column"
-              expand="lg"
-            >
-              <Navbar.Brand href="#home">React Demo</Navbar.Brand>
-              <span className="text-muted">
-                backend is {this.state.backend}
-              </span>
-              <Navbar.Collapse id="basic-navbar-nav" aria-expanded="true">
-                <Nav className="flex-column">
-                  {data.map((m) =>
-                    m.routes
-                      .filter((m) => m.menu)
-                      .map((route, index) => (
-                        <Nav.Link href={route.path}>{route.title}</Nav.Link>
-                      ))
-                  )}
-                </Nav>
-              </Navbar.Collapse>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            </Navbar>
+        <div style={{ display: "flex" }}>
+          <div
+            style={{
+              padding: "10px",
+              width: "16%",
+              background: "#f0f0f0",
+            }}
+          >
+            {data.map((m) => (
+              <ul style={{ listStyleType: "none", padding: 0 }}>
+                <li>
+                  <b>{m.name}</b>
+                </li>
+                {m.routes
+                  .filter((m) => m.menu)
+                  .map((route, index) => (
+                    <li>
+                      <Link to={route.path} style={route.style}>
+                        {route.title}
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            ))}
           </div>
-          <div className="col-sm-10 body-content">
-            <div className="row-sm-1">
-              <Switch>
-                {data.map((m) =>
-                  m.routes.map((route, index) => (
-                    <Route exact path={route.path}>
-                      {route.description}
-                    </Route>
-                  ))
-                )}
-              </Switch>
-            </div>
-            <div className="row-sm-10">
-              <Switch>
-                {data.map((m) =>
-                  m.routes.map((route, index) => (
-                    <Route exact path={route.path}>
-                      {route.main()}
-                    </Route>
-                  ))
-                )}
-              </Switch>
-            </div>
+          <div style={{ flex: 1, padding: "10px" }}>
+            <Switch>
+              {data.map((m) =>
+                m.routes.map((route, index) => (
+                  <Route
+                    key={index}
+                    path={route.path}
+                    exact={route.exact}
+                    children={
+                      <SidebarTitle style={route.style}>
+                        {route.description}
+                      </SidebarTitle>
+                    }
+                  />
+                ))
+              )}
+            </Switch>
+            <Switch>
+              {data.map((m) =>
+                m.routes.map((route, index) => (
+                  <Route
+                    key={index}
+                    path={route.path}
+                    exact={route.exact}
+                    children={<route.main />}
+                  />
+                ))
+              )}
+            </Switch>
           </div>
         </div>
       </Router>
