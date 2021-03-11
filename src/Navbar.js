@@ -9,6 +9,7 @@ import Files from "./components/Files";
 import { Login, LoginAfter } from "./components/Auth";
 import Error from "./components/Error";
 import Todos from "./components/Todos/App";
+import { history } from "core/helpers";
 
 function SidebarTitle(props) {
   let style = { color: "blue" };
@@ -108,11 +109,15 @@ class BootstrapNavbar extends React.Component {
         backend: res.data,
       });
     })();
+    history.listen(() => {
+      // clear alert on location change
+      // dispatch(alertActions.clear());
+    });
   }
 
   render() {
     return (
-      <Router>
+      <Router history={history}>
         <div style={{ display: "flex" }}>
           <div
             style={{
@@ -162,7 +167,7 @@ class BootstrapNavbar extends React.Component {
                     key={index}
                     path={route.path}
                     exact={route.exact}
-                    children={<route.main />}
+                    component={route.main}
                   />
                 ))
               )}

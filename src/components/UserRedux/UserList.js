@@ -4,6 +4,7 @@ import { rootPath } from "./User";
 import { IMG_URL } from "services/api";
 import { UserActions as actions } from "stores/User/actions";
 import { useSelector, useDispatch } from "stores/index";
+import UserService from "../../services/UserService";
 
 const UserList = (props) => {
   const defKeyword = useSelector((state) => state.user.keyWord);
@@ -52,7 +53,7 @@ const UserList = (props) => {
   };
 
   const remove = (id) => {
-    dispatch(actions.delete(id));
+    dispatch(actions.Remove(id));
   };
 
   // async delete(id) {

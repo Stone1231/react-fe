@@ -1,4 +1,6 @@
 import UserService from "services/UserService";
+import { rootPath } from "components/UserRedux/User";
+import { history } from "core/helpers";
 
 export const UserActionTypes = {
   LoadAll: "[User] Load all",
@@ -70,24 +72,26 @@ const Init = () => {
 
 const Create = (user) => {
   return (dispatch) => {
-    UserService.Create(user).then((row) => {
+    UserService.post(user).then((row) => {
       // dispatch({ type: UserActionTypes.LoadListSuccess, payload: { row } });
       dispatch(UserActions.Query());
+      history.push("/" + rootPath);
     });
   };
 };
 
 const Update = (user) => {
   return (dispatch) => {
-    UserService.Update(user).then((row) => {
+    UserService.put(user).then((row) => {
       dispatch(UserActions.Query());
+      history.push("/" + rootPath);
     });
   };
 };
 
 const Remove = (id) => {
   return (dispatch) => {
-    UserService.Remove(id).then(() => {
+    UserService.delete(id).then(() => {
       dispatch(UserActions.Query());
     });
   };
