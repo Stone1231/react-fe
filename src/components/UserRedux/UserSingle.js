@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { rootPath } from "./User";
 import UserService from "services/UserService";
@@ -24,6 +24,7 @@ const UserSingle = (props) => {
   const { register, handleSubmit, reset } = useForm({
     defaultValues: row,
   });
+  const history = useHistory();
   useEffect(() => {
     // 轉成checkbox list對應的bool陣列
     if (row.projs && props.projs) {
@@ -52,6 +53,8 @@ const UserSingle = (props) => {
     } else {
       dispatch(actions.Create(data));
     }
+
+    history.push("/" + rootPath);
   };
 
   return (

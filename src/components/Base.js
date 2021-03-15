@@ -4,6 +4,7 @@ export default class BaseComponent extends React.Component {
   constructor(props) {
     super(props);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleSelectNumberChange = this.handleSelectNumberChange.bind(this);
   }
   handleInputChange(event) {
     const target = event.target;
@@ -48,6 +49,22 @@ export default class BaseComponent extends React.Component {
     // this.setState({
     //   row: row,
     // });
+  }
+
+  handleSelectNumberChange(event) {
+    const target = event.target;
+    let name = target.name;
+    let state = this.state;
+    let names = name.split(".");
+    if (names.length > 1) {
+      state = this.state[names[0]];
+      name = names[1];
+    }
+
+    let value;
+    value = parseInt(target.value);
+    state[name] = value;
+    this.setState(state);
   }
 }
 

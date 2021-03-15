@@ -171,7 +171,7 @@ class UserSingle extends BaseComponent {
                   name="row.dept"
                   list={this.props.depts}
                   value={this.state.row.dept}
-                  onChange={this.handleInputChange}
+                  onChange={this.handleSelectNumberChange}
                 />
               </td>
             </tr>
